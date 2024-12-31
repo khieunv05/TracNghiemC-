@@ -17,11 +17,35 @@
 //getmouseclick(WM_LBUTTONDOWN,x1,y1) (Lay vi tri chuot trai vua bam vao 2 bien x1,y1)
 using namespace std;
 string FILENAME = "questions.txt";
+string FILENAME2 = "khoaHocTuNhien.txt";
+string FILENAME3 = "khoaHocXaHoi.txt";
+string FILENAME4 = "ngoaiNgu.txt";
+string FILEREAD = "";
 bool isFileEmpty(string &fileName){
 	ifstream file(fileName,ios::ate);
 	return file.tellg()==0;
 }
-void ChucNangSuaCauHoi(int &hienthi,vector<QA> &tempQA,vector<QA> &newQA){
+void ChucNangLuaChonChuDe(int &chuDe){
+	int x1,y1;
+	GiaoDien giaoDien;
+	BamChuot bamChuot;
+	giaoDien.ManHinhLuaChonChuDe();
+	while(true){
+		getmouseclick(WM_LBUTTONDOWN,x1,y1);
+		if(bamChuot.BamChuotManHinhLuaChonChuDe(x1,y1)) break;
+		delay(10);
+	}
+	if((x1>=280 && x1<=1000) && (y1 >= 290 && y1<=390)){
+		chuDe = 1;
+	}
+	if((x1>=280 && x1<=1000) && (y1 >= 490 && y1<=590)){
+		chuDe = 2;
+	}
+	if((x1>=280 && x1<=1000) && (y1 >= 690 && y1<=790)){
+		chuDe = 3;
+	}
+}
+void ChucNangSuaCauHoi(int &hienthi,int &chuDe){
 	GiaoDien giaoDien;
 	bool suaCauHoi=0;
 	string cauHoi,cauTraLoi,luaChonA,luaChonB,luaChonC,luaChonD;
@@ -30,10 +54,13 @@ void ChucNangSuaCauHoi(int &hienthi,vector<QA> &tempQA,vector<QA> &newQA){
 	int x1,y1;
 	cleardevice();
 	BamChuot bamChuot;
-	ifstream inFile(FILENAME);
 	string line;
 	vector<QA> listQA;
 	int heSo=0;
+	if(chuDe == 1) FILEREAD = FILENAME2;
+	else if(chuDe == 2) FILEREAD = FILENAME3;
+	else FILEREAD = FILENAME4;
+	ifstream inFile(FILEREAD);
 	while(getline(inFile,line)){
 		QA a;
 		a.setQuestion(line);
@@ -49,6 +76,7 @@ void ChucNangSuaCauHoi(int &hienthi,vector<QA> &tempQA,vector<QA> &newQA){
 		a.setChoiceD(line);
 		listQA.push_back(a);
 	}
+	inFile.close();
 	setfillstyle(SOLID_FILL,WHITE);
 	bar(0,0,getmaxx(),getmaxy());
 	setbkcolor(LIGHTGRAY);
@@ -337,7 +365,7 @@ void ChucNangSuaCauHoi(int &hienthi,vector<QA> &tempQA,vector<QA> &newQA){
 							if(bamChuot.BamChuotManHinhXacNhanThemCauHoi(x2,y2)) break;
 							delay(10);
 						}
-						if((x2>=440 && x2<=540) && (y2>=320 && y2<=420)){
+						if((x2>=440 && x2<=570) && (y2>=320 && y2<=420)){
 			                setbkcolor(WHITE);
 			                cleardevice();
 		                	setbkcolor(LIGHTGRAY);
@@ -541,17 +569,10 @@ void ChucNangSuaCauHoi(int &hienthi,vector<QA> &tempQA,vector<QA> &newQA){
 				listQA[k].setChoiceD(luaChonD);
 		}
 			}
-//			setbkcolor(BLACK);
-//			setfillstyle(SOLID_FILL,BLACK);
-//			setcolor(WHITE);
 		}
-			ofstream outFile(FILENAME);
-			while(tempQA.size()!=0) tempQA.erase(tempQA.begin()+0);
-			while(newQA.size()!=0) newQA.erase(newQA.begin()+0);
+			ofstream outFile(FILEREAD);
 			for(int i =0;i<listQA.size();i++){
-				tempQA.push_back(listQA[i]);
-				newQA.push_back(listQA[i]);
-				if(isFileEmpty(FILENAME)){
+				if(isFileEmpty(FILEREAD)){
 				outFile<<listQA[i].getQuestion()<<endl;
 				outFile<<listQA[i].getAnswer()<<endl;
 				outFile<<listQA[i].getChoiceA()<<endl;
@@ -627,7 +648,7 @@ void clickmouse(QA a,int &diem,vector<QA> & wrongQA){
 		wrongQA.push_back(a);
 		}
 	}
-void ChucNangMenu(vector<QA> &listQA,int &hienthi){
+void ChucNangMenu(int &hienthi,int &chuDe){
 	int x1,y1;
 	GiaoDien giaoDien;
 	BamChuot bamChuot;
@@ -637,10 +658,34 @@ void ChucNangMenu(vector<QA> &listQA,int &hienthi){
 		if(bamChuot.BamChuotManHinhMenu(x1,y1)) break;
 		delay(10);
 	}
-	if((x1>=550 && x1<=1100) && (y1>=380 && y1<=450)){
+	
+	if((x1>=550 && x1<=1100) && (y1>=320 && y1<=390)){
+		ChucNangLuaChonChuDe(chuDe);
 		hienthi=2;
 	}
-	if((x1>=550 && x1<=1100) && (y1>=580 && y1<=650)){
+	if((x1>=550 && x1<=1100) && (y1>=460 && y1<=530)){
+		vector<QA> listQA;
+		string line;
+		ChucNangLuaChonChuDe(chuDe);
+		if(chuDe == 1) FILEREAD = FILENAME2;
+		else if (chuDe == 2) FILEREAD = FILENAME3;
+		else FILEREAD = FILENAME4;
+		ifstream inFile(FILEREAD);
+		while(getline(inFile,line)){
+		QA a;
+		a.setQuestion(line);
+		getline(inFile,line);
+		a.setAnswer(line);
+		getline(inFile,line);
+		a.setChoiceA(line);
+		getline(inFile,line);
+		a.setChoiceB(line);
+		getline(inFile,line);
+		a.setChoiceC(line);
+		getline(inFile,line);
+		a.setChoiceD(line);
+		listQA.push_back(a);
+	}
 		if(listQA.size() ==0){
 			
 			hienthi=5; // Hienthi =5 de hien thi menu thong bao chua co cau hoi
@@ -648,15 +693,46 @@ void ChucNangMenu(vector<QA> &listQA,int &hienthi){
 		else hienthi=6; // hienthi=6 sua cau hoi
 	}
 	if((x1>=550 && x1<=1100) && (y1>=180 && y1<=250)){
+		vector<QA> listQA;
+		string line;
+		ChucNangLuaChonChuDe(chuDe);
+		if(chuDe == 1) FILEREAD = FILENAME2;
+		else if (chuDe == 2) FILEREAD = FILENAME3;
+		else FILEREAD = FILENAME4;
+		ifstream inFile(FILEREAD);
+		while(getline(inFile,line)){
+		QA a;
+		a.setQuestion(line);
+		getline(inFile,line);
+		a.setAnswer(line);
+		getline(inFile,line);
+		a.setChoiceA(line);
+		getline(inFile,line);
+		a.setChoiceB(line);
+		getline(inFile,line);
+		a.setChoiceC(line);
+		getline(inFile,line);
+		a.setChoiceD(line);
+		listQA.push_back(a);
+	}
 		if(listQA.size() ==0){
 			
 			hienthi=5; // Hienthi =5 de hien thi menu thong bao chua co cau hoi
 		}
 		else hienthi=3;
 	}
+
+	if((x1>=550 && x1<=1100) && (y1>=600 && y1<=670)){
+		ChucNangLuaChonChuDe(chuDe);
+		hienthi = 7;
+	}
+	if((x1>=550 && x1<=1100) && (y1>=740 && y1<=810)){
+		ChucNangLuaChonChuDe(chuDe);
+		hienthi = 8;
+	}
 }
 
-void ChucNangThemCauHoi(vector<QA> &listQA,vector<QA> &tempQA,int &hienthi){
+void ChucNangThemCauHoi(int &hienthi,int &chuDe){
 	GiaoDien giaoDien;
 	BamChuot bamChuot;
 	int x1,y1,dapAn=0;
@@ -851,16 +927,19 @@ void ChucNangThemCauHoi(vector<QA> &listQA,vector<QA> &tempQA,int &hienthi){
 					if(bamChuot.BamChuotManHinhXacNhanThemCauHoi(x2,y2)) break;
 					delay(10);
 				}
-				if((x2>=440 && x2<=540) && (y2>=320 && y2<=420)){
+				if((x2>=440 && x2<=570) && (y2>=320 && y2<=420)){
 					cleardevice();
-					ofstream outFile(FILENAME,ios::app);
+					if(chuDe == 1) FILEREAD = FILENAME2;
+					if(chuDe == 2) FILEREAD = FILENAME3;
+					if(chuDe == 3) FILEREAD = FILENAME4;
+					ofstream outFile(FILEREAD,ios::app);
 					a.setChoiceA(cA);
 					a.setQuestion(question);
 					a.setChoiceB(cB);
 					a.setChoiceC(cC);
 					a.setChoiceD(cD);
 					a.setAnswer(ans);
-					if(isFileEmpty(FILENAME)){
+					if(isFileEmpty(FILEREAD)){
 						outFile<<question<<endl;
 						outFile<<ans<<endl;
 						outFile<<cA<<endl;
@@ -877,8 +956,6 @@ void ChucNangThemCauHoi(vector<QA> &listQA,vector<QA> &tempQA,int &hienthi){
 						outFile<<cD;
 				}
 					outFile.close();
-					listQA.push_back(a);
-					tempQA.push_back(a);
 					cA="";
 					question="";
 					cB="";
@@ -1070,14 +1147,14 @@ void ChucNangThemCauHoi(vector<QA> &listQA,vector<QA> &tempQA,int &hienthi){
 		delay(10);
 	}
 	}
-void ChucNangHoanThanhLamBai(vector<QA> & listQA,int &diem,int &hienthi){
+void ChucNangHoanThanhLamBai(vector<QA> & listQA,int &diem,int &hienthi,int &count){
 	int x1,y1;
 	GiaoDien giaoDien;
 	BamChuot bamChuot;
-	giaoDien.ManHinhHoanThanhLamBai(listQA,diem);
+	giaoDien.ManHinhHoanThanhLamBai(listQA,diem,count);
 	while(true){
 		getmouseclick(WM_LBUTTONDOWN,x1,y1);
-		if(bamChuot.BamChuotManHinhHoanThanhLamBai(x1,y1)) break;
+		if(bamChuot.BamChuotManHinhHoanThanhLamBai(x1,y1,diem,count,listQA)) break;
 		delay(10);
 	}
 	rectangle(420,650,700,750);
@@ -1085,38 +1162,44 @@ void ChucNangHoanThanhLamBai(vector<QA> & listQA,int &diem,int &hienthi){
 		hienthi=1;
 		cleardevice();
 		diem = 0;
+		count=0;
+	}
+	if(diem != listQA.size() && count ==0 ){
+		if((x1>=780 && x1<=1200) && (y1>=650 && y1<=750)){
+		count = 1;
+		hienthi=4;
+		cleardevice();
+		diem=0;
+		}
 	}
 	/* TODO (#1#): Sua lai loi
  */
+}
+void ChucNangLuaChonRandom(bool &random){
+	int x1,y1;
+	GiaoDien giaoDien;
+	BamChuot bamChuot;
+	giaoDien.ManHinhLuaChonRandom();
+	while(true){
+		getmouseclick(WM_LBUTTONDOWN,x1,y1);
+		if(bamChuot.BamChuotManHinhLuaChonRandom(x1,y1) ) break;
+		delay(10);
+	}
+	if((x1>=350 && x1<=500) && (y1>=350 && y1<=450)) random=1;
+	else random=0;
+	cleardevice();
 }
 
 int main(){
 	GiaoDien giaoDien;
 	string line;
 	ifstream inFile(FILENAME);
-	int x,y,count=0;
+	int x,y,count=0,chuDe=0;
 	int hienthi=1; // Menu bat dau
 	char temp[20];// hien thi diem
 	srand(time(0));//sinh random
 	int diem = 0;
-	vector<QA> listQA;
 	vector<QA> wrongQA;
-	while(getline(inFile,line)){
-		QA a;
-		a.setQuestion(line);
-		getline(inFile,line);
-		a.setAnswer(line);
-		getline(inFile,line);
-		a.setChoiceA(line);
-		getline(inFile,line);
-		a.setChoiceB(line);
-		getline(inFile,line);
-		a.setChoiceC(line);
-		getline(inFile,line);
-		a.setChoiceD(line);
-		listQA.push_back(a);
-	}
-	vector<QA> tempQA(listQA);
 	initwindow(1600,900);
 	HWND hwnd = FindWindow(NULL, "Windows BGI");
 	SetWindowText(hwnd, "Phan mem cau hoi trac nghiem");
@@ -1125,29 +1208,84 @@ int main(){
 		setfillstyle(SOLID_FILL,BLACK);
 		setcolor(WHITE);
 		if(hienthi==1){
-	//		readimagefile("rose.bmp",0,0,getmaxx(),getmaxy());
-			ChucNangMenu(listQA,hienthi);
+			ChucNangMenu(hienthi,chuDe);
 			delay(10);
-		//	continue;
 		}
 		else if(hienthi==2){ // Menu them cau hoi => hienthi=2
+			int theLoai=0;
 			cleardevice();
-			ChucNangThemCauHoi(listQA,tempQA,hienthi);
+			settextstyle(GOTHIC_FONT,0,5);
+			ChucNangThemCauHoi(hienthi,chuDe);
 		//	clearmouseclick(WM_LBUTTONDOWN);
 			continue;
 		}
 		else if(hienthi==3){// Menu lam bai hien thi =3
+			vector<QA> listQA;
+			if(chuDe == 1) FILEREAD = FILENAME2;
+			else if (chuDe == 2) FILEREAD = FILENAME3;
+			else FILEREAD = FILENAME4;
+			ifstream inFile(FILEREAD);
+			while(getline(inFile,line)){
+				QA a;
+				a.setQuestion(line);
+				getline(inFile,line);
+				a.setAnswer(line);
+				getline(inFile,line);
+				a.setChoiceA(line);
+				getline(inFile,line);
+				a.setChoiceB(line);
+				getline(inFile,line);
+				a.setChoiceC(line);
+				getline(inFile,line);
+				a.setChoiceD(line);
+				listQA.push_back(a);
+	}
+			inFile.close();
+			vector<QA> tempQA(listQA);
+			bool coRandom;
+			ChucNangLuaChonRandom(coRandom);
+			if(coRandom==1){
+				while(true){
+					int random = 0 + rand() % (tempQA.size());
+					setbkcolor(BLACK);
+					setfillstyle(SOLID_FILL,BLACK);
+					cleardevice();
+					sprintf(temp, "%d", diem);
+					tempQA[random].TronDapAn();
+					giaoDien.ManHinhLamBai(tempQA[random]);
+					setbkcolor(LIGHTBLUE);
+					outtextxy(1200,50,(char*)"Score: ");
+					setcolor(RED);
+					settextstyle(GOTHIC_FONT,0,8);
+					outtextxy(1465,30,temp);
+					setcolor(BLACK);
+					clearmouseclick(WM_LBUTTONDOWN);
+					while(!ismouseclick(WM_LBUTTONDOWN)){
+					delay(10);
+			}
+					clickmouse(tempQA[random],diem,wrongQA);
+					tempQA.erase(tempQA.begin()+random);
+					if(tempQA.size() == 0){
+						delay(2000);
+						ChucNangHoanThanhLamBai(listQA,diem,hienthi,count);
+						break;
+					}
+					else{
+						delay(2000);
+					}
+			}
+		}
+			else{
 				int i =0;
 				while(true){
 					setbkcolor(BLACK);
 					setfillstyle(SOLID_FILL,BLACK);
 					cleardevice();
 					sprintf(temp, "%d", diem);
-					settextstyle(GOTHIC_FONT,0,10);
 					giaoDien.ManHinhLamBai(tempQA[i]);
 					clearmouseclick(WM_LBUTTONDOWN);
 					setbkcolor(LIGHTBLUE);
-					outtextxy(1200,50,(char*)"Diem so: ");
+					outtextxy(1200,50,(char*)"Score: ");
 					setcolor(RED);
 					settextstyle(GOTHIC_FONT,0,8);
 					outtextxy(1465,30,temp);
@@ -1159,14 +1297,68 @@ int main(){
 					i++;
 					if(tempQA.size() == i){
 						delay(2000);
-						ChucNangHoanThanhLamBai(listQA,diem,hienthi);
+						ChucNangHoanThanhLamBai(listQA,diem,hienthi,count);
 						break;
 					}
 					else{
 						delay(2000);
 					}
-			}	
+			}
+		}	
 	}
+		else if(hienthi == 4){// Menu lam lai cau hoi hienthi=4
+			vector<QA> listQA;
+			if(chuDe == 1) FILEREAD = FILENAME2;
+			else if (chuDe == 2) FILEREAD = FILENAME3;
+			else FILEREAD = FILENAME4;
+			ifstream inFile(FILEREAD);
+			while(getline(inFile,line)){
+				QA a;
+				a.setQuestion(line);
+				getline(inFile,line);
+				a.setAnswer(line);
+				getline(inFile,line);
+				a.setChoiceA(line);
+				getline(inFile,line);
+				a.setChoiceB(line);
+				getline(inFile,line);
+				a.setChoiceC(line);
+				getline(inFile,line);
+				a.setChoiceD(line);
+				listQA.push_back(a);
+	}
+			inFile.close();
+			while(true){
+				int random = 0 + rand() % (wrongQA.size());
+				setbkcolor(BLACK);
+				setfillstyle(SOLID_FILL,BLACK);
+				cleardevice();
+				setcolor(RED);
+				sprintf(temp, "%d", diem);
+				wrongQA[random].TronDapAn();
+				giaoDien.ManHinhLamBai(wrongQA[random]);
+				setbkcolor(LIGHTBLUE);
+				outtextxy(1200,50,(char*)"Score: ");
+				setcolor(RED);
+				settextstyle(GOTHIC_FONT,0,8);
+				outtextxy(1465,30,temp);
+				setcolor(BLACK);
+				clearmouseclick(WM_LBUTTONDOWN);
+				while(!ismouseclick(WM_LBUTTONDOWN)){
+				delay(10);
+		}
+				clickmouse(wrongQA[random],diem,wrongQA);
+				wrongQA.erase(wrongQA.begin()+random);
+				if(wrongQA.size() == 0){
+					delay(2000);
+					ChucNangHoanThanhLamBai(listQA,diem,hienthi,count);
+					break;
+				}
+				else{
+					delay(2000);
+				}
+			}
+		}
 		else if(hienthi==5){ // Hienthi=5 menu chua co cau hoi
 			giaoDien.MenuChuaCoCauHoi();
 			delay(2000);
@@ -1174,7 +1366,14 @@ int main(){
 			hienthi=1;
 		}
 		else if(hienthi==6) {// Hienthi =6 sua cau hoi
-			ChucNangSuaCauHoi(hienthi,tempQA,listQA);
+			settextstyle(GOTHIC_FONT,0,5);
+			ChucNangSuaCauHoi(hienthi,chuDe);
+		}
+		else if(hienthi == 7){ //Hien thi =7 xoa cau hoi
+			hienthi=1;
+}
+		else if(hienthi ==8){//Hien thi =8 dat lich
+			hienthi=1;
 		}
 }
 	getch();

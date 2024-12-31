@@ -1,6 +1,11 @@
 #pragma once
-#include<string>
 #include<iostream>
+#include<string>
+#include<cstdlib>
+#include<ctime>
+#include<fstream>
+#include<vector>
+#include<windows.h>
 using namespace std;
 class QA{
 	private:
@@ -65,4 +70,22 @@ class QA{
 			cout<<"Nhap dap an: ";
 			getline(cin,answer);
 		}
+		void TronDapAn(){
+			vector<string> listAns;
+			srand(time(0));
+			string cA;
+			listAns.push_back(choiceA);
+			listAns.push_back(choiceB);
+			listAns.push_back(choiceC);
+			listAns.push_back(choiceD);
+			for(int i =0;i<4;i++){
+				int randomNum = 0 + rand() %(listAns.size());
+				cA = listAns[randomNum];
+				if(i ==0) choiceA = cA;
+				if(i==1) choiceB = cA;
+				if(i==2) choiceC = cA;
+				if(i==3) choiceD = cA;
+				listAns.erase(listAns.begin()+randomNum);
+			}
+}
 };

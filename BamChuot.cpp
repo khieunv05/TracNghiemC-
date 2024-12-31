@@ -51,19 +51,31 @@ class BamChuot{
 		bool BamChuotManHinhMenu(int x1,int y1){
 			
 			if(((x1>=550 && x1<=1100) && (y1>= 180 && y1<=250))||
-				((x1>=550&& x1<=1100) && (y1>=380 && y1<=450))||
-				((x1>=550&& x1<=1100) && (y1>=580 && y1<=650))
+				((x1>=550&& x1<=1100) && (y1>=320 && y1<=390))||
+				((x1>=550&& x1<=1100) && (y1>=460 && y1<=530))||
+				((x1>=550&& x1<=1100) && (y1>=600 && y1<=670))||
+				((x1>=550&& x1<=1100) && (y1>=740 && y1<=810))
 			) return true;
 			return false;
 }
 		bool BamChuotManHinhXacNhanThemCauHoi(int x1,int y1){
-			if((x1>=440 && x1<=540) && (y1>=320 && y1<=420) || ((x1>=970 && x1<=1170) && (y1>=320 && y1<=420))) return true;
+			if((x1>=440 && x1<=570) && (y1>=320 && y1<=420) || ((x1>=970 && x1<=1170) && (y1>=320 && y1<=420))) return true;
 			return false;
 		}
-		bool BamChuotManHinhHoanThanhLamBai(int x1,int y1){
-			if(((x1>=420 && x1<=700) && (y1>=650 && y1<=750) ) )return true;
+		bool BamChuotManHinhHoanThanhLamBai(int x1,int y1,int &diem,int &count,vector<QA> &listQA){
+			if(((x1>=420 && x1<=700) && (y1>=650 && y1<=750) )||
+			((x1>=780 && x1<=1200) && (y1>=650 && y1<=750) && count==0 && diem !=listQA.size())
+			 )return true;
 			return false;
-	/* TODO (#1#): Sua lai loi
- */
 }
+		bool BamChuotManHinhLuaChonRandom(int x1,int y1){
+			if((x1>=350 && x1<=500) && (y1 >= 350 && y1<=450) || ((x1>=1000 && x1<=1150) && (y1>=350 && y1<=450)) ) return true;
+			return false;
+		}
+		bool BamChuotManHinhLuaChonChuDe(int x1,int y1){
+			if((x1>=280 && x1<=1000) && (y1 >= 290 && y1<=390) || ((x1>=280 && x1<=1000) && (y1>=490 && y1<=590))
+			|| ((x1>=280 && x1<=1000) && (y1>=690 && y1<=790))
+			 ) return true;
+			return false;
+		}
 };
